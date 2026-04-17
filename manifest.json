@@ -1,0 +1,11 @@
+{
+  "name": "SOVIET_GPS",
+  "short_name": "S_GPS",
+  "start_url": ".",
+  "display": "fullscreen",
+  "background_color": "#000000",
+  "theme_color": "#00FF41",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
