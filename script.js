@@ -2,6 +2,7 @@
  * SOVIET_GPS_CORE_LOGIC
  * Version: 1.0.0
  * Status: Operational
+ * Universal Orientation Support Enabled
  */
 
 let target = { lat: null, lon: null };
@@ -10,6 +11,7 @@ let currentPos = { lat: null, lon: null };
 // 1. Inisialisasi Jam Taktikal
 setInterval(() => {
     const now = new Date();
+    // Gunakan en-GB untuk format 24-jam yang lebih "military"
     document.getElementById('clock').innerText = now.toLocaleTimeString('en-GB');
 }, 1000);
 
@@ -34,9 +36,11 @@ function setTarget() {
             if (currentPos.lat !== null) updateNavigation();
         } else {
             updateUIState("ERR", "INVALID_COORDS: CHECK_FORMAT");
+            input.style.borderColor = "red";
         }
     } else {
         updateUIState("ERR", "PARSE_ERROR: USE_LAT_LON_FORMAT");
+        input.style.borderColor = "red";
     }
 }
 
@@ -77,21 +81,27 @@ function updateNavigation() {
 
     // Render Anak Panah (Rotation)
     const arrow = document.getElementById('arrow');
-    arrow.style.transform = `rotate(${bearing}deg)`;
+    if (arrow) {
+        arrow.style.transform = `rotate(${bearing}deg)`;
+    }
 
-    // Output Data
+    // Output Data dengan format kemas
     document.getElementById('brg-out').innerText = Math.round(bearing).toString().padStart(3, '0');
     document.getElementById('dist-out').innerText = distance.toFixed(3);
     
     // Logik Kedekatan (Arrival Logic)
     if (distance < 0.05) { // Bawah 50 meter
         updateUIState("ARRIVED", "OBJECTIVE_REACHED: STANDBY");
+    } else {
+        updateUIState("LOCKED", "VECTOR_OPTIMAL: TRACKING...");
     }
 }
 
 function updateUIState(status, logMsg) {
-    document.getElementById('status-out').innerText = status;
-    document.getElementById('log').innerText = `SYSTEM_LOG: ${logMsg}`;
+    const statusEl = document.getElementById('status-out');
+    const logEl = document.getElementById('log');
+    if (statusEl) statusEl.innerText = status;
+    if (logEl) logEl.innerText = `SYSTEM_LOG: ${logMsg}`;
 }
 
 // 6. GPS Watcher (High Accuracy)
@@ -100,13 +110,16 @@ if ("geolocation" in navigator) {
         currentPos.lat = pos.coords.latitude;
         currentPos.lon = pos.coords.longitude;
         
-        // Update Live Display
-        document.getElementById('coords-live').innerText = 
-            `LOC: ${currentPos.lat.toFixed(4)}N, ${currentPos.lon.toFixed(4)}E`;
+        // Update Live Display Koordinat
+        const coordsEl = document.getElementById('coords-live');
+        if (coordsEl) {
+            coordsEl.innerText = `LOC: ${currentPos.lat.toFixed(4)}N, ${currentPos.lon.toFixed(4)}E`;
+        }
         
         // Speed Conversion (m/s to km/h)
-        const speed = pos.coords.speed ? (pos.coords.speed * 3.6).toFixed(1) : "0.0";
-        document.getElementById('spd-out').innerText = speed;
+        const speedVal = pos.coords.speed ? (pos.coords.speed * 3.6).toFixed(1) : "0.0";
+        const spdEl = document.getElementById('spd-out');
+        if (spdEl) spdEl.innerText = speedVal;
 
         updateNavigation();
 
@@ -117,7 +130,7 @@ if ("geolocation" in navigator) {
     }, {
         enableHighAccuracy: true,
         maximumAge: 1000,
-        timeout: 5000
+        timeout: 10000 // Tingkatkan timeout sikit untuk peranti lama
     });
 } else {
     updateUIState("INCOMPATIBLE", "HARDWARE_NOT_SUPPORTED");
