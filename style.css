@@ -1,0 +1,186 @@
+/* * SOVIET_TACTICAL_INTERFACE_STYLING
+ * AUTHOR: SYSTEM_ARCHITECT
+ * THEME: PHOSPHOR_GREEN_MONOCHROME
+ */
+
+:root {
+    --green: #00FF41;
+    --dim-green: #003300;
+    --dark-green: #001a00;
+    --bg: #000000;
+    --font-main: 'Courier New', Courier, monospace;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--green);
+    font-family: var(--font-main);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Header Taktikal */
+.header {
+    border-bottom: 2px solid var(--green);
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: bold;
+    background: rgba(0, 255, 65, 0.05);
+}
+
+/* Kawasan Radar (Central Display) */
+.radar-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: radial-gradient(circle, var(--dark-green) 0%, var(--bg) 70%);
+}
+
+.radar-circle {
+    width: 300px;
+    height: 300px;
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 20px var(--dim-green), inset 0 0 20px var(--dim-green);
+}
+
+/* Grid Crosshair (Soviet Sight) */
+.radar-circle::before, .radar-circle::after {
+    content: '';
+    position: absolute;
+    background-color: var(--green);
+    opacity: 0.3;
+}
+.radar-circle::before { width: 100%; height: 1px; top: 50%; left: 0; }
+.radar-circle::after { width: 1px; height: 100%; left: 50%; top: 0; }
+
+/* Bulatan Tambahan (Range Rings) */
+.inner-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    border: 1px dashed var(--dim-green);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Anak Panah (Vector Pointer) */
+#arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0; 
+    height: 0; 
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-bottom: 45px solid var(--green);
+    margin-left: -18px;
+    margin-top: -35px;
+    transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    filter: drop-shadow(0 0 8px var(--green));
+    z-index: 10;
+}
+
+/* Panel Data Bawah */
+.data-panel {
+    border-top: 2px solid var(--green);
+    padding: 20px;
+    background: var(--bg);
+}
+
+.input-group {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    background: var(--dark-green);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px;
+    font-family: inherit;
+    flex-grow: 1;
+    outline: none;
+    font-size: 16px;
+}
+
+input::placeholder {
+    color: var(--dim-green);
+}
+
+button {
+    background: var(--green);
+    color: var(--bg);
+    border: none;
+    padding: 10px 20px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:active {
+    background: var(--dim-green);
+    color: var(--green);
+}
+
+/* Statistik & Telemetri */
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.stat-item {
+    font-size: 14px;
+    border-left: 3px solid var(--dim-green);
+    padding-left: 8px;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: var(--green);
+}
+
+/* Terminal Log */
+.system-log {
+    font-size: 11px;
+    color: var(--green);
+    opacity: 0.6;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--dim-green);
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Animasi Scan (Optional Vibe) */
+@keyframes scan {
+    from { opacity: 0.2; }
+    to { opacity: 0.5; }
+}
+
+.radar-circle {
+    animation: scan 2s infinite alternate;
+}
